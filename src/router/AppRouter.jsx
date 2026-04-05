@@ -33,6 +33,7 @@ import PaymentManagementPage from '../pages/admin/PaymentManagementPage';
 import SupplierManagementPage from '../pages/admin/SupplierManagementPage';
 import UploadExcelPage from '../pages/admin/UploadExcelPage';
 import ChatManagementPage from '../pages/admin/ChatManagementPage';
+import ReviewManagementPage from '../pages/admin/ReviewManagementPage';
 
 const AdminRedirect = () => {
   const { isAdminOrMod } = useAuth();
@@ -73,6 +74,7 @@ const AppRouter = () => {
           <Route path="/admin/suppliers" element={<SupplierManagementPage />} />
           <Route path="/admin/upload-excel" element={<UploadExcelPage />} />
           <Route path="/admin/chat" element={<ChatManagementPage />} />
+          <Route path="/admin/reviews" element={<ReviewManagementPage />} />
         </Route>
 
         {/* Fallback */}

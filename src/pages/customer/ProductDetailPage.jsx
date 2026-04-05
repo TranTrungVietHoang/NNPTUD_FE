@@ -25,6 +25,7 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [reviewForm] = Form.useForm();
+  const [eligibility, setEligibility] = useState({ eligible: false, message: '' });
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -37,6 +38,11 @@ const ProductDetailPage = () => {
         setProduct(prodRes?.product || prodRes);
         setInventory(invRes);
         setReviews(Array.isArray(revRes) ? revRes : (revRes?.reviews || []));
+
+        if (user) {
+          const eligibleRes = await reviewApi.checkEligibility(id);
+          setEligibility(eligibleRes);
+        }
       } catch {
         message.error('Không thể tải thông tin sản phẩm');
       } finally {
@@ -44,7 +50,7 @@ const ProductDetailPage = () => {
       }
     };
     fetchAll();
-  }, [id]);
+  }, [id, user]);
 
   const handleAddToCart = async () => {
     if (!user) { navigate('/login'); return; }
@@ -58,12 +64,26 @@ const ProductDetailPage = () => {
 
   const handleReview = async (values) => {
     if (!user) { navigate('/login'); return; }
+    if (!eligibility.eligible) {
+      message.error(eligibility.message || 'Bạn không có quyền đánh giá');
+      return;
+    }
     try {
-      await reviewApi.create({ product: id, ...values });
+      await reviewApi.create({ 
+        product: id, 
+        orderId: eligibility.orderId,
+        ...values 
+      });
       message.success('Đã gửi đánh giá!');
       reviewForm.resetFields();
-      const revRes = await reviewApi.getByProduct(id);
-      setReviews(Array.isArray(revRes) ? revRes : (revRes?.reviews || []));
+      
+      // Refresh reviews and eligibility
+      const [newRevRes, newEligibility] = await Promise.all([
+        reviewApi.getByProduct(id),
+        reviewApi.checkEligibility(id)
+      ]);
+      setReviews(Array.isArray(newRevRes) ? newRevRes : (newRevRes?.reviews || []));
+      setEligibility(newEligibility);
     } catch (err) {
       message.error(err?.message || 'Gửi đánh giá thất bại');
     }
@@ -153,15 +173,21 @@ const ProductDetailPage = () => {
 
       {user && (
         <Card title="Viết đánh giá" style={{ marginTop: 16 }}>
-          <Form form={reviewForm} onFinish={handleReview} layout="vertical">
-            <Form.Item name="rating" label="Đánh giá" rules={[{ required: true, message: 'Vui lòng chọn số sao' }]}>
-              <Rate />
-            </Form.Item>
-            <Form.Item name="comment" label="Nhận xét" rules={[{ required: true, message: 'Vui lòng nhập nhận xét' }]}>
-              <Input.TextArea rows={3} placeholder="Chia sẻ trải nghiệm của bạn..." />
-            </Form.Item>
-            <Button type="primary" htmlType="submit">Gửi đánh giá</Button>
-          </Form>
+          {eligibility.eligible ? (
+            <Form form={reviewForm} onFinish={handleReview} layout="vertical">
+              <Form.Item name="rating" label="Đánh giá" rules={[{ required: true, message: 'Vui lòng chọn số sao' }]}>
+                <Rate />
+              </Form.Item>
+              <Form.Item name="comment" label="Nhận xét" rules={[{ required: true, message: 'Vui lòng nhập nhận xét' }]}>
+                <Input.TextArea rows={3} placeholder="Chia sẻ trải nghiệm của bạn..." />
+              </Form.Item>
+              <Button type="primary" htmlType="submit">Gửi đánh giá</Button>
+            </Form>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px 0' }}>
+              <Text type="secondary">{eligibility.message || 'Bạn cần mua sản phẩm này để có thể đánh giá.'}</Text>
+            </div>
+          )}
         </Card>
       )}
     </div>

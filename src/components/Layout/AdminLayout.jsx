@@ -15,7 +15,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   HomeOutlined,
-  MessageOutlined
+  MessageOutlined,
+  StarOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -31,6 +32,7 @@ const adminMenuItems = [
   { key: '/admin/inventory', label: 'Tồn kho', icon: <InboxOutlined /> },
   { key: '/admin/vouchers', label: 'Voucher', icon: <TagOutlined /> },
   { key: '/admin/orders', label: 'Đơn hàng', icon: <ShoppingCartOutlined /> },
+  { key: '/admin/reviews', label: 'Đánh giá', icon: <StarOutlined /> },
   { key: '/admin/payments', label: 'Thanh toán', icon: <DollarOutlined /> },
   { key: '/admin/suppliers', label: 'Nhà cung cấp', icon: <TruckOutlined /> },
   { key: '/admin/upload-excel', label: 'Import Excel', icon: <UploadOutlined /> },
