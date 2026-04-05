@@ -43,6 +43,7 @@ const UserLayout = () => {
   const userMenuItems = [
     { key: 'orders', label: 'Lịch sử đơn hàng', icon: <HistoryOutlined />, onClick: () => navigate('/orders') },
     { key: 'notifications', label: 'Thông báo', icon: <BellOutlined />, onClick: () => navigate('/notifications') },
+    { key: 'profile', label: 'Thông tin cá nhân', icon: <UserOutlined />, onClick: () => navigate('/profile') },
     { key: 'chat', label: 'Chat hỗ trợ', icon: <MessageOutlined />, onClick: () => navigate('/chat') },
     { type: 'divider' },
     { key: 'logout', label: 'Đăng xuất', icon: <LogoutOutlined />, danger: true, onClick: handleLogout },

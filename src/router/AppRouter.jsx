@@ -20,6 +20,7 @@ import OrderHistoryPage from '../pages/customer/OrderHistoryPage';
 import NotificationsPage from '../pages/customer/NotificationsPage';
 import ReservationPage from '../pages/customer/ReservationPage';
 import ChatPage from '../pages/customer/ChatPage';
+import ProfilePage from '../pages/customer/ProfilePage';
 
 // Admin pages
 import DashboardPage from '../pages/admin/DashboardPage';
@@ -59,6 +60,7 @@ const AppRouter = () => {
           <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
           <Route path="/reservation" element={<ProtectedRoute><ReservationPage /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         </Route>
 
         {/* Admin routes */}
